@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+vars:
+  GREETING: Hello, world!
+  UI: ./web
+  BACKEND: ./server
+
+tasks:
+  default:
+    desc: Print a greeting message
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+
+  ui:
+    desc: Run only the frontend
+    cmds: cd {{.UI}} && bun run dev
+
+  server-dev:
+    desc: Run only the backend
+    cmds: 
+      - cd {{.BACKEND}} &&  ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+      - docker run pos
+
+  server-test:
+    desc: Run the backend in testing mode
+    cmds: cd {{.BACKEND}} && mvn test -Dtest=ClassName
