@@ -1,29 +1,61 @@
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
-
 version: '3'
 
 vars:
-  GREETING: Hello, world!
   UI: ./web
   BACKEND: ./server
 
 tasks:
-  default:
-    desc: Print a greeting message
-    cmds:
-      - echo "{{.GREETING}}"
-    silent: true
 
   ui:
     desc: Run only the frontend
-    cmds: cd {{.UI}} && bun run dev
+    cmds: 
+      - cd {{.UI}} && bun run dev
 
-  server-dev:
+  ui-prod:
+    desc: Run only the frontend in production mode
+    cmds:
+      - cd {{.UI}} && bun run build && bun run preview
+
+  server:
     desc: Run only the backend
     cmds: 
-      - cd {{.BACKEND}} &&  ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-      - docker run pos
+      - cd {{.BACKEND}} && gradle bootRun -Dspring.profiles.active=dev
 
-  server-test:
-    desc: Run the backend in testing mode
-    cmds: cd {{.BACKEND}} && mvn test -Dtest=ClassName
+  server-prod:
+    desc: Run backend in production mode
+    cmds:
+      - cd {{.BACKEND}} && gradle bootRun -Dspring.profiles.active=prod
+
+  db:
+    desc: Start the database
+    cmds:
+      - docker compose up -d
+
+  db-stop:
+    desc: Stop the database
+    cmds:
+      - docker compose down
+
+  db-destroy:
+    desc: Destroy the database
+    cmds:
+      - docker compose down -v
+
+  psql: 
+    desc: Connect to the database
+    cmds:
+      - docker exec -it postgres-db psql -U postgres
+
+  dev: 
+    desc: Run the full application in development mode
+    cmds:
+      - task: db
+      - task: server
+      - task: ui
+
+  prod: 
+    desc: Run the full application in production mode
+    cmds:
+      - task: db
+      - task: server-prod
+      - task: ui-prod

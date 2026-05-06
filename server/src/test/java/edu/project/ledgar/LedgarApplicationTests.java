@@ -1,10 +1,10 @@
-package com.cash.ledger;
+package edu.project.ledgar;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LedgerApplicationTests {
+class LedgarApplicationTests {
 
 	@Test
 	void contextLoads() {

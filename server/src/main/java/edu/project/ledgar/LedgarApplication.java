@@ -1,13 +1,13 @@
-package com.cash.ledger;
+package edu.project.ledgar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LedgerApplication {
+public class LedgarApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LedgerApplication.class, args);
+		SpringApplication.run(LedgarApplication.class, args);
 	}
 
 }

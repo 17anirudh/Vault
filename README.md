@@ -1,8 +1,8 @@
-# <div style="display: flex; align-items: center; gap: 10px;"><img src="web/public/favicon.png" width="100" style="border-radius: 30%;"></img>Snapshot</div>
+# <div style="display: flex; align-items: center; gap: 10px;"><img src="web/public/favicon.png" width="100" style="border-radius: 30%;"></img>Ledgar</div>
 
 ## Overview
 
-Snapshot is a Ledger-based application that provides a way to manage and send financial transactions.
+**Ledgar** is a Ledger-based application that provides a way to manage and send financial transactions.
 
 ## Tech Stack
 
@@ -12,5 +12,5 @@ Snapshot is a Ledger-based application that provides a way to manage and send fi
 - Backend: Spring Security, Spring Data JPA, Spring Kafka, Lombok, Validation
 - Database: PostgreSQL (v16.10) - served via Docker
 - Communication: RESTful API (Synchronous), Apache Kafka (Asynchronous)
-- Tools & DevOps: Bun (v1.3.13), Maven (v3.9.9), Jenkins (v2.491.3), Docker (v28.2.2)
-- Lifecycle: GitHub Issues, Rapid Application Development (RAD)
+- Tools & DevOps: Bun (v1.3.13), Gradle (v9.4.0), Jenkins (v2.491.3), Docker (v28.2.2)
+- Lifecycle: Rapid Application Development (RAD)
