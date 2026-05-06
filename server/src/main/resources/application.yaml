@@ -2,7 +2,7 @@ spring:
   application:
     name: ledgar
   datasource:
-    url: jdbc:postgresql://localhost:5432/your_db_name
+    url: jdbc:postgresql://localhost:5432/bird
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver

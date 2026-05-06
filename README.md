@@ -4,6 +4,10 @@
 
 **Ledgar** is a Ledger-based application that provides a way to manage and send financial transactions.
 
+## Gallery
+
+![Landing Page](./landing.png)
+
 ## Tech Stack
 
 - Frameworks: Spring Boot (v4.0.6), Next.js (v16.2.4)

@@ -19,12 +19,12 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Image src="/favicon.png" alt="Snapshot" width={108} height={108} />
           <h1 className="text-7xl md:text-9xl font-bold text-white opacity-80 uppercase text-center drop-shadow-2xl leading-tight tracking-tighter font-serif">
-            Ledgar
+            Bird
           </h1>
         </div>
         
         <h2 className="text-2xl md:text-4xl font-bold text-white opacity-80 uppercase text-center drop-shadow-2xl leading-tight tracking-tighter font-serif">
-          Your trust-worthy ledger that tracks and helps you manage your financial spending
+          Your reliable buddy who helps you track and transfer your money seamlessly
         </h2>
         <Link href={ROUTES.REGISTER} className="mt-18 group relative w-auto cursor-pointer overflow-hidden rounded-full border p-2 px-6 text-center font-semibold">
           <div className="flex items-center justify-center gap-2">
