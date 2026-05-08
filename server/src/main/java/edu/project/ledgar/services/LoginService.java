@@ -1,7 +1,8 @@
 
 package edu.project.ledgar.services;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -9,67 +10,90 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import edu.project.ledgar.dto.RegisterRequest;
+import edu.project.ledgar.dto.LoginRequest;
 import edu.project.ledgar.models.AuthModel;
 import edu.project.ledgar.models.ProfileModel;
-import edu.project.ledgar.repository.AuthRepository;
-import edu.project.ledgar.repository.RegisterRepo;
+import edu.project.ledgar.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class LoginService {
-    private final RegisterRepo registerRepo;
-    private final AuthRepository authRepository;
+    // NOTE: Verify the expiration of tokens
+    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Transactional
-    public ResponseEntity<?> login(RegisterRequest request) {
+    public ResponseEntity<?> login(LoginRequest request) {
         try {
-            authRepository.findByEmail(request.getEmail()).orElseThrow(() -> {
-                throw new RuntimeException("Email not found");
-            });
-            
-            // Creating objects
-            ProfileModel profile = new ProfileModel();
-            AuthModel auth = new AuthModel();
-            JwtService jwtService = new JwtService();
+            boolean email = request.identity().contains("@");
 
-            // Create profile
-            profile.setEmail(request.getEmail());
-            
-            // Store sensitive info in auth table
-            auth.setProfile_id(profile);
-            auth.setEmail(request.getEmail());
-            auth.setPassword(passwordEncoder.encode(request.getPassword()));
+            if (email) {
+                Optional<ProfileModel> profile = profileRepository.findByEmail(request.identity());
+                if (profile.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+                } 
+                AuthModel auth = new AuthModel();
+                auth.setProfile(profile.get());
+                passwordMatcher(request.password(), auth.getPassword());
+                String accessToken = jwtService.getAccessTokenFromEmail(request.identity());
+                String refreshToken = jwtService.getRefreshTokenFromEmail(request.identity());
+                return responseHelper(accessToken, refreshToken);
+            }
+            else {
+                Optional<ProfileModel> profile = profileRepository.findByUsername(request.identity());
+                if (profile.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+                } 
+                AuthModel auth = new AuthModel();
+                auth.setProfile(profile.get());
+                passwordMatcher(request.password(), auth.getPassword());
+                String accessToken = jwtService.getAccessTokenFromUserName(request.identity());
+                String refreshToken = jwtService.getRefreshTokenFromUserName(request.identity());
+                return responseHelper(accessToken, refreshToken);
+            }          
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, "Invalid credentials"
+            );
+        }
+    }
 
-            // JWT production
-            String token = jwtService.generateToken(request.getEmail());
-            LocalDateTime expiresAt = LocalDateTime.now().plusDays(1);
-            auth.setExpiresAt(expiresAt);
-            
-            // Persist data
-            registerRepo.save(profile);
-            authRepository.save(auth);
-
-            // Creating cookie
-            ResponseCookie cookie = ResponseCookie
-                                        .from("auth_token", token)
+    private ResponseEntity<?> responseHelper(String access, String refresh) {
+        ResponseCookie accessCookie = ResponseCookie
+                                        .from("access_token", access)
                                         .httpOnly(true)
                                         .secure(true)
                                         .path("/")
-                                        .maxAge(24 * 60 * 60)
-                                        .sameSite("Lax")
+                                        .maxAge(Duration.ofMinutes(18))
+                                        .sameSite("Strict")
                                         .build();
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .header("Set-Cookie", cookie.toString())
-                    .body("User Registered Successfully");            
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Registration failed", e);
+        ResponseCookie refreshCookie = ResponseCookie
+                                        .from("refresh_token", refresh)
+                                        .httpOnly(true)
+                                        .secure(true)
+                                        .path("/")
+                                        .maxAge(Duration.ofDays(27))
+                                        .sameSite("Strict")
+                                        .build();
+
+        return ResponseEntity
+            .ok()
+            .header("Set-Cookie", accessCookie.toString())
+            .header("Set-Cookie", refreshCookie.toString())
+            .body("User Logged In Successfully"); 
+    }
+
+    private void passwordMatcher(String password, String dbPassword) {
+        if(!passwordEncoder.matches(password, dbPassword)) {
+            throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, "Invalid credentials"
+            );
         }
     }
 }

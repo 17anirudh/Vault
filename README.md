@@ -7,10 +7,10 @@
 ## Gallery
 
 1. Landing Page
-![Landing Page](./landing.png)
+![Landing Page](./assets/landing.png)
 
 2. Register Page
-![Register Page](./form.png)
+![Register Page](./assets/form.png)
 
 ## Tech Stack
 

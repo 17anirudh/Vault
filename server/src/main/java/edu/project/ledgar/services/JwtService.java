@@ -1,55 +1,74 @@
 package edu.project.ledgar.services;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import edu.project.ledgar.config.JwtConfiguration;
+import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Map;
+import javax.crypto.SecretKey;
+
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+    private final JwtConfiguration jwtConfiguration;
 
-    @Value("${JWT_SECRET}")
-    private String SECRET_KEY;
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    public String generateAccessToken(String username, String email) {
+        Instant now = Instant.now();
 
-    public String generateToken(String email) {
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) 
-                .signWith(key)
+                .subject(username)
+                .claims(Map.of("email", email, "username", username))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusMillis(jwtConfiguration.getAccessExpiration())))
+                .signWith(jwtConfiguration.getAccessKey())
                 .compact();
     }
 
-    public String extractEmail(String token) {
+    public String generateRefreshToken(String username, String email) {
+        Instant now = Instant.now();
+
+        return Jwts.builder()
+                .subject(username)
+                .claims(Map.of("email", email, "username", username))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusMillis(jwtConfiguration.getRefreshExpiration())))
+                .signWith(jwtConfiguration.getRefreshKey())
+                .compact();
+    }
+
+    public String getAccessTokenFromUserName(String username) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith((SecretKey) jwtConfiguration.getAccessKey())
                 .build()
-                .parseSignedClaims(token)
+                .parseSignedClaims(username)
                 .getPayload()
-                .getSubject();
-    }
-
-    public boolean isTokenValid(String token, String userEmail) {
-        final String extractedEmail = extractEmail(token);
-        return (extractedEmail.equals(userEmail) && !isTokenExpired(token));
-    }
-
-    public boolean isTokenExpired(String token) {
+                .get("username", String.class);
+    } 
+    public String getRefreshTokenFromUserName(String username) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith((SecretKey) jwtConfiguration.getRefreshKey())
                 .build()
-                .parseSignedClaims(token)
+                .parseSignedClaims(username)
                 .getPayload()
-                .getExpiration()
-                .before(new Date());
-    }
-
-    public String refreshToken(String token) {
-        return generateToken(extractEmail(token));
-    }
+                .get("username", String.class);
+    } 
+    public String getRefreshTokenFromEmail(String email) {
+        return Jwts.parser()
+                .verifyWith((SecretKey) jwtConfiguration.getRefreshKey())
+                .build()
+                .parseSignedClaims(email)
+                .getPayload()
+                .get("email", String.class);
+    } 
+    public String getAccessTokenFromEmail(String email) {
+        return Jwts.parser()
+                .verifyWith((SecretKey) jwtConfiguration.getAccessKey())
+                .build()
+                .parseSignedClaims(email)
+                .getPayload()
+                .get("email", String.class);
+    }   
 }

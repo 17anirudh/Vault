@@ -4,6 +4,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,10 +18,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(
     name = "auth", 
     indexes = {
@@ -44,20 +48,27 @@ public class AuthModel {
         ),
         nullable = false
     )
-    private ProfileModel profile_id;   
+    private ProfileModel profile;   
 
     @Column(nullable = false, unique = true)
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
+
+    @Column(nullable = true)
+    private String ip;
     
     @Column(nullable = false)
     private String password;
-    
+
     @Column(nullable = false)
+    private String refreshToken;
+
     @CreationTimestamp
-    private LocalDateTime createdAt;
-    
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp    
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private Instant updatedAt;
 }

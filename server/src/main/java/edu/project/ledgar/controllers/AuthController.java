@@ -1,20 +1,19 @@
 package edu.project.ledgar.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import edu.project.ledgar.dto.LoginRequest;
 import edu.project.ledgar.dto.RegisterRequest;
 import edu.project.ledgar.services.RegisterService;
 
 @RestController
 public class AuthController {
-    private final RegisterService registerService;
-    
-    public AuthController(RegisterService registerService) {
-        this.registerService = registerService;
-    }
+    @Autowired
+    private RegisterService registerService;
     
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
@@ -22,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok().build();
     }
 }
