@@ -1,5 +1,9 @@
 export default function DashboardPage() {
     return (
-        <h1 className="mx-auto">Dashboard</h1>
+        <>
+            {Array.from({ length: 100 }).map((_, i) => (
+                <div key={i}>{i}</div>
+            ))}
+        </>
     )
 }

@@ -9,49 +9,61 @@ import type { ReactNode } from "react";
 type navItem = {
     display: () => ReactNode;
     route: string;
+    text: string;
 }
 const navigation: navItem[] = [
 
     {
         display: () => (
             <div className="flex items-center justify-center gap-3">
-                <SendIcon /> Initiate
+                <SendIcon /> <span className="hidden md:block">Initiate</span>
             </div>
         ),
-        route: ROUTES.DASHBOARD_INITIATE
+        route: ROUTES.DASHBOARD_INITIATE,
+        text: "Initiate"
     },
     {
         display: () => (
             <div className="flex items-center justify-center gap-3">
-                <HouseIcon /> Home
+                <HouseIcon /> <span className="hidden md:block">Home</span>
             </div>
         ),
-        route: ROUTES.DASHBOARD
+        route: ROUTES.DASHBOARD,
+        text: "Home"
     },
     {
         display: () => (
             <div className="flex items-center justify-center gap-3">
-                <HistoryIcon /> History
+                <HistoryIcon /> <span className="hidden md:block">History</span>
             </div>
         ),
-        route: ROUTES.DASHBOARD_HISTORY
+        route: ROUTES.DASHBOARD_HISTORY,
+        text: "History"
     },
     {
         display: () => (
             <div className="flex items-center justify-center gap-3">
-                <UserRoundIcon /> Profile
+                <UserRoundIcon /> <span className="hidden md:block">Profile</span>
             </div>
         ),
-        route: ROUTES.DASHBOARD_PROFILE
+        route: ROUTES.DASHBOARD_PROFILE,
+        text: "Profile"
     }
 ]
 
 export default function DashboardMenu() {
     const path = usePathname();
     return (
-        <nav className="flex justify-between items-center border-b border-gray-200 p-4 mb-5 flex-wrap">
+        <nav className="flex justify-between items-center md:border-b border-t border-gray-200 p-4 mb-5 flex-wrap">
             {navigation.map((item) => (
-                <Link key={item.route} href={item.route} className={path === item.route ? "text-primary transition-all duration-500" : ""}>{item.display()}</Link>
+                <Link 
+                    key={item.route} 
+                    href={item.route} 
+                    className={path === item.route ? "text-primary transition-all duration-500" : ""}
+                    title={item.text}
+                >
+                    {item.display()}
+                </Link>
             ))}
         </nav>
     )

@@ -15,7 +15,7 @@ export default function Home() {
           interactive={false}
         />
       </div>
-      <div className="inset z-0 flex min-h-screen flex-col items-center justify-center border">
+      <div className="inset z-0 flex min-h-screen flex-col items-center justify-center">
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Image src="/favicon.png" alt="Snapshot" width={108} height={108} />
           <h1 className="text-7xl md:text-9xl font-bold text-white opacity-80 uppercase text-center drop-shadow-2xl leading-tight tracking-tighter font-serif">
