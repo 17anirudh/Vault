@@ -1,20 +1,31 @@
 spring:
   application:
-    name: ledgar
+    name: bird
+
+  config:
+    import: optional:file:.env.properties
+    
   datasource:
-    url: jdbc:postgresql://localhost:5432/bird
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      initialization-fail-timeout: 60000
+      connection-timeout: 30000
+
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: update # Disable in prod
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+    show-sql: true
 
-jwt:
-  access-secret: ${ACCESS_SECRET}
-  refresh-secret: ${REFRESH_SECRET} 
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.hibernate.SQL: debug

@@ -16,7 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -50,7 +50,7 @@ public class TranscationModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(
         name = "debit_account_id",
         foreignKey = @ForeignKey(
@@ -61,7 +61,7 @@ public class TranscationModel {
     )
     private ProfileModel debit_account_id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(
         name = "credit_account_id",
         foreignKey = @ForeignKey(

@@ -1,9 +1,10 @@
+import Greeting from "@/components/greeting-component";
+
+
 export default function DashboardPage() {
     return (
         <>
-            {Array.from({ length: 100 }).map((_, i) => (
-                <div key={i}>{i}</div>
-            ))}
+            <Greeting username="veed" />
         </>
     )
 }

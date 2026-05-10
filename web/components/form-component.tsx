@@ -12,7 +12,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { type RegisterSchemaType, RegisterSchema } from "@/types/auth";
+import { type registerSchemaType, registerSchema } from "@/types/schema";
 import { register } from "@/api/auth";
 import { toast } from "sonner";
 import { KEYS } from "@/lib/query";
@@ -24,8 +24,8 @@ import Image from "next/image";
 
 export function RegisterForm() {
     const router = useRouter();
-    const form = useForm<RegisterSchemaType>({
-        resolver: zodResolver(RegisterSchema),
+    const form = useForm<registerSchemaType>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
         userName: "",
         email: "",
@@ -38,12 +38,17 @@ export function RegisterForm() {
 
     const { mutate: onSubmit, isPending } = useMutation({
         mutationKey: KEYS.REGISTER,
-        mutationFn: async (data: RegisterSchemaType) => register(data),
+        mutationFn: async (data: registerSchemaType) => register(data),
+        onMutate: () => {
+          toast.loading("Registering...");
+        },
         onSuccess: () => {
+          toast.dismiss();
           toast.success("Registration successful!");
           router.replace(ROUTES.DASHBOARD);
         },
         onError: () => {
+          toast.dismiss();
           toast.error("We are facing some issue")
         }
     })
