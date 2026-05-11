@@ -10,8 +10,8 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 type Props = { children: ReactNode }
 
 export const metadata: Metadata = {
-  title: "Snapshot",
-  description: "Snapshot is a Ledger application for seamless transaction management",
+  title: "Bird",
+  description: "Bird is a Ledger application for seamless transaction management",
   icons: '/favicon.png'
 };
 

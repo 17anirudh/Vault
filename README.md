@@ -22,4 +22,4 @@
 - Communication: RESTful API (Synchronous), Apache Kafka (Asynchronous)
 - Tools & DevOps: Bun (v1.3.13), Gradle (v9.4.0), GitHub Actions, Docker (v28.2.2)
 - Testing: JUnit (v5.11.4)
-- Cloud: AWS (RDS, Fargate, MSK), ServiceNow ITSM
+- Cloud: AWS (RDS, Fargate, MSK)

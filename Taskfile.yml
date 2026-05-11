@@ -49,13 +49,11 @@ tasks:
   dev: 
     desc: Run the full application in development mode
     cmds:
-      - task: db
-      - task: server
       - task: ui
+      - task: server
 
   prod: 
     desc: Run the full application in production mode
     cmds:
-      - task: db
       - task: server-prod
       - task: ui-prod

@@ -1,19 +1,21 @@
 import { SERVER_URL } from "@api/config";
-import type { RegisterSchemaType, LoginSchemaType } from "@/types/auth";
+import type { registerSchemaType, loginSchemaType } from "@/types/schema";
 
-const URL: string = SERVER_URL + "/auth"
+let dev: boolean = process.env.NODE_ENV === "development"
 
-export async function register(data: RegisterSchemaType): Promise<any> {
+export async function register(data: registerSchemaType): Promise<any> {
     try {
-        const response = await fetch(`${URL}/register`, {
+        dev && console.log(`${SERVER_URL}/auth/register`)
+        const response = await fetch(`${SERVER_URL}/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data }),
+            body: JSON.stringify(data),
             credentials: "include"
         })
         if(!response.ok) {
             throw new Error(await response.text())
         }
+        console.log(dev ?? await response.json())
         return await response.json()
     }
     catch (error) {
@@ -21,11 +23,11 @@ export async function register(data: RegisterSchemaType): Promise<any> {
     }
 }
 
-export async function login(data: LoginSchemaType): Promise<any> {
+export async function login(data: loginSchemaType): Promise<any> {
     try {
         const response = await fetch(`${URL}/login`, {
             method: "POST",
-            headers: {
+            headers: {  
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ data })
@@ -33,6 +35,7 @@ export async function login(data: LoginSchemaType): Promise<any> {
         if(!response.ok) {
             throw new Error(await response.text())
         }
+        console.log(dev ?? await response.json())
         return await response.json()
     }
     catch (error) {
@@ -42,13 +45,14 @@ export async function login(data: LoginSchemaType): Promise<any> {
 
 export async function refresh(): Promise<any> {
     try {
-        const response = await fetch(`${URL}/refresh`, {
+        const response = await fetch(`${SERVER_URL}/auth/refresh`, {
             method: "POST",
             credentials: "include"
         })
         if(!response.ok) {
             throw new Error(await response.text())
         }
+        console.log(dev ?? await response.json())
         return await response.json()
     }
     catch (error) {

@@ -44,7 +44,7 @@ public class ProfileModel {
     @Column(nullable = true)
     @Size(min = 4 , max = 20, message = "Name must be between 4 and 20 characters")
     @Pattern(
-        regexp = "^[a-zA-Z. ]+$", 
+        regexp = "^[a-zA-Z0-9. ]+$", 
         message = "Only letters, dots, and spaces are allowed"
     )
     private String name;

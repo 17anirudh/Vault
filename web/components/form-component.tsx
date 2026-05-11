@@ -27,18 +27,18 @@ export function RegisterForm() {
     const form = useForm<registerSchemaType>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-        userName: "",
-        email: "",
-        password: ""
+          username: "",
+          email: "",
+          password: ""
         },
         resetOptions: {
-        keepValues: false
+          keepValues: false
         }
     })
 
-    const { mutate: onSubmit, isPending } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationKey: KEYS.REGISTER,
-        mutationFn: async (data: registerSchemaType) => register(data),
+        mutationFn: async (data: registerSchemaType) => await register(data),
         onMutate: () => {
           toast.loading("Registering...");
         },
@@ -52,9 +52,16 @@ export function RegisterForm() {
           toast.error("We are facing some issue")
         }
     })
+
+    const onSubmit = (data: registerSchemaType) => {
+      console.log("SUBMITTING", data);
+      mutate(data);
+    };
+
+    console.log(form.formState.errors);
   
     return (
-        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit as any)} className="flex flex-col justify-center items-center w-full h-full">
+        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-full h-full">
           <Image 
             src="/favicon.png"
             width={100}
@@ -63,7 +70,7 @@ export function RegisterForm() {
           />
           <FieldGroup className="w-full flex flex-col items-center justify-center">
             <Controller
-              name="userName"
+              name="username"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="w-sm p-2">
@@ -144,7 +151,10 @@ export function RegisterForm() {
               {isPending ? (
                 <Spinner className="size-8" />
               ) : (
-                <PremiumButton form="form-rhf-demo" text="Submit" />
+                <PremiumButton 
+                  text="Submit" 
+                  type="submit"
+                />
               )}
             </Field>
           </FieldGroup>

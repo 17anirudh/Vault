@@ -6,8 +6,8 @@ const username: ZodString = z
                 .string()
                 .min(4, "Username must be at least 4 characters long")
                 .max(20, "Username must be at most 20 characters long")
-                .regex(/^[a-zA-Z. ]+$/, {
-                    message: "Only letters, dots, and spaces are allowed",
+                .regex(/^[a-zA-Z0-9. ]+$/, {
+                    message: "Only letters, numbers, dots, and spaces are allowed",
                 });
 
 const profileSchema: T = z.object({
