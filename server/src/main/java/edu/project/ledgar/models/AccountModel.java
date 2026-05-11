@@ -51,7 +51,7 @@ public class AccountModel {
         ),
         nullable = false
     )
-    private ProfileModel profile_id; 
+    private ProfileModel profile; 
 
     @Column(nullable = false)
     @Min(value = 1000, message = "PIN must be at least 4 digits")

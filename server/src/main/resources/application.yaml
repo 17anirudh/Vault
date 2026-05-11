@@ -29,3 +29,8 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+
+
+jwt:
+  access-secret: ${ACCESS_SECRET}
+  refresh-secret: ${REFRESH_SECRET}
