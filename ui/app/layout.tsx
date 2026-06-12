@@ -4,7 +4,6 @@ import "./globals.css";
 import type { ReactNode } from "react";
 import RootProvider from "@/lib/root-provider";
 import { Background } from "@/components/bg";
-import { useMutation } from "@tanstack/react-query";
 
 const instrumentSans = Instrument_Sans({subsets:['latin'],variable:'--font-sans'});
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });

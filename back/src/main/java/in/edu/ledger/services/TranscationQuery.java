@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import in.edu.ledger.repository.TranscationRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,8 +17,8 @@ enum TransactionStatus {
 }
 
 record Response(
-    UUID creditId,
-    UUID debitId,
+    String creditId,
+    String debitId,
     Long amount,
     TransactionStatus status,
     String description,
@@ -34,7 +36,19 @@ public class TranscationQuery {
     public List<Response> getDataForDay(UUID inp) {
         Instant start = Instant.now().minusSeconds(dayInSeconds);
         Instant end = Instant.now();
-        return transcationRepo.findForPeriod(inp, start, end);
+        return transcationRepo
+                .findForPeriod(inp, start, end)
+                .stream()
+                .map(t -> new Response(
+                        t.getCreditProfile().getUsername(),
+                        t.getDebitProfile().getUsername(),
+                        t.getAmount(),
+                        t.getStatus(),
+                        t.getNotes(),
+                        t.getCreatedAt(),
+                        t.getCompletedAt()
+                    ))
+                    .toList();
     }
 
     public List<Response> getDataForWeek(UUID inp) {
